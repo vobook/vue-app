@@ -26,11 +26,11 @@ export default {
   /*
    ** Global CSS
    */
-  css: [],
+  css: ['~/assets/main.css'],
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ['~/plugins/axios', '~/plugins/vuetify'],
   /*
    ** Nuxt.js dev-modules
    */
@@ -44,35 +44,31 @@ export default {
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/auth'
   ],
+
+  router: {
+    middleware: ['auth']
+  },
+
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: 'http://127.0.0.1:3333/api'
+    baseURL: 'http://localhost:8080/api',
+    requestInterceptor: (config, { store }) => {
+      config.headers.common['X-Client'] = '1'
+      return config
+    }
   },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
    */
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
-    theme: {
-      // dark: true,
-      themes: {
-        dark: {
-          primary: colors.blue.darken2,
-          accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3
-        }
-      }
-    }
+    customVariables: ['~/assets/variables.scss']
   },
   /*
    ** Build configuration
@@ -88,8 +84,8 @@ export default {
     strategies: {
       local: {
         endpoints: {
-          login: { url: 'login', method: 'post', propertyName: 'data.token' },
-          user: { url: 'me', method: 'get', propertyName: 'data' },
+          login: { url: 'login/', method: 'post', propertyName: 'token' },
+          user: false,
           logout: false
         }
       }
