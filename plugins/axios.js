@@ -1,10 +1,15 @@
-export default function({ $axios, redirect }) {
+const publicRoutes = require('~/routes/public_routes.js')
+
+export default function({ $axios, store, route, redirect }) {
   $axios.onRequest((config) => {
     config.headers.common['X-Client'] = '1'
+
+    if (store.state.auth && !publicRoutes.names.includes(route.name)) {
+      config.headers.common.Authorization = 'Bearer ' + store.state.auth
+    }
   })
 
   $axios.onError((error) => {
-    console.log(error)
     const code = parseInt(error.response && error.response.status)
     if (code === 400) {
       redirect('/400')

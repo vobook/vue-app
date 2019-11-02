@@ -53,8 +53,6 @@
 
 <script>
 export default {
-  auth: false,
-
   layout: 'simple',
   data() {
     return {
@@ -65,13 +63,17 @@ export default {
   methods: {
     async login() {
       try {
-        await this.$auth.loginWith('local', {
-          data: {
+        await this.$axios
+          .$post('/login/', {
             email: this.email,
             password: this.password
-          }
-        })
-        this.$router.push('/')
+          })
+          .then((resp) => {
+            if (resp.token) {
+              this.$store.commit('setAuth', resp)
+              this.$router.push('/')
+            }
+          })
       } catch (e) {
         this.$toast.error(e.response.data.error)
       }

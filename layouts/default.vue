@@ -2,6 +2,15 @@
   <v-app dark>
     <v-navigation-drawer v-model="drawer" fixed app>
       <v-list>
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title
+              >{{ fullname() }}
+              <v-icon @click="logout()">mdi-logout</v-icon></v-list-item-title
+            >
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item
           v-for="(item, i) in items"
           :key="i"
@@ -65,6 +74,24 @@ export default {
       ],
       rightDrawer: false,
       title: 'vobook'
+    }
+  },
+
+  methods: {
+    logout() {
+      this.$store.commit('setAuth', null)
+      this.$router.push('/login')
+    },
+    fullname() {
+      if (this.$store.state.auth === null) {
+        return
+      }
+
+      return (
+        this.$store.state.auth.user.first_name +
+        ' ' +
+        this.$store.state.auth.user.last_name
+      )
     }
   }
 }

@@ -44,12 +44,11 @@ export default {
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios',
-    '@nuxtjs/auth'
+    '@nuxtjs/axios'
   ],
 
   router: {
-    middleware: ['auth']
+    middleware: ['load_auth', 'auth']
   },
 
   /*
@@ -57,11 +56,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: 'http://localhost:8080/api',
-    requestInterceptor: (config, { store }) => {
-      config.headers.common['X-Client'] = '1'
-      return config
-    }
+    baseURL: 'http://localhost:8080/api'
   },
   /*
    ** vuetify module configuration
@@ -78,17 +73,5 @@ export default {
      ** You can extend webpack config here
      */
     extend(config, ctx) {}
-  },
-
-  auth: {
-    strategies: {
-      local: {
-        endpoints: {
-          login: { url: 'login/', method: 'post', propertyName: 'token' },
-          user: false,
-          logout: false
-        }
-      }
-    }
   }
 }
