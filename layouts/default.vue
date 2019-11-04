@@ -1,14 +1,12 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer v-model="drawer" fixed app>
+    <v-navigation-drawer v-model="drawer" app fixed expand-on-hover permanent>
       <v-list>
         <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title
-              >{{ fullname() }}
-              <v-icon @click="logout()">mdi-logout</v-icon></v-list-item-title
-            >
-          </v-list-item-content>
+          <v-list-item-title v-text="fullname()"></v-list-item-title>
+          <v-list-item-icon>
+            <v-icon @click="logout()" title="Logout">mdi-logout</v-icon>
+          </v-list-item-icon>
         </v-list-item>
 
         <v-list-item
@@ -59,7 +57,7 @@
 export default {
   data() {
     return {
-      drawer: true,
+      drawer: false,
       items: [
         {
           icon: 'mdi-apps',

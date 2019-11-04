@@ -1,26 +1,29 @@
 <template>
   <v-layout>
     <v-container>
-      <Waterfall :resizable="true" :gutterWidth="5" :gutterHeight="5">
+      <Waterfall :resizable="true" :gutter-width="5" :gutter-height="5">
         <WaterfallItem v-for="elem in elems" :key="elem.id" :width="300">
-          <v-card outlined tile>
-            <v-card-title class="blue white--text">
-              <span class="headline">{{ elem.name }}</span>
+          <v-card tile outlined>
+            <v-card-title dark>
+              <span>{{ elem.name }}</span>
               <v-spacer></v-spacer>
               <v-menu bottom left>
                 <template v-slot:activator="{ on }">
                   <v-btn icon v-on="on">
-                    <v-icon>mdi-dots-vertical</v-icon>
+                    <v-icon dark>mdi-dots-vertical</v-icon>
                   </v-btn>
                 </template>
 
-                <v-list>
+                <v-list dark>
                   <v-list-item
                     v-for="(act, i) in actions"
                     :key="i"
                     @click="act.handler(elem.id)"
                   >
-                    <v-list-item-title>{{ act.title }}</v-list-item-title>
+                    <v-list-item-title
+                      ><v-icon>{{ act.icon }}</v-icon
+                      >{{ act.title }}</v-list-item-title
+                    >
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -29,15 +32,15 @@
             <v-card-text>
               <v-list>
                 <template v-for="item in elem.props">
-                  <v-list-item :key="item.id" v-if="isTypePrimary(item.type)">
+                  <v-list-item v-if="isTypePrimary(item.type)" :key="item.id">
                     <v-list-item-content>
                       <v-list-item-subtitle class="text-left"
                         ><v-icon>{{ propTypeIcon(item.type) }}</v-icon>
                         {{ item.name }} ({{ item.type }})</v-list-item-subtitle
                       >
                       <v-list-item-title
-                        v-html="item.value"
                         class="text-left"
+                        v-html="item.value"
                       ></v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
@@ -74,26 +77,37 @@ export default {
       elems: null,
       actions: [
         {
+          title: 'Edit',
+          icon: 'mdi-pencil',
+          handler: (id) => {
+            console.log('Editing: ' + id)
+          }
+        },
+        {
           title: 'Delete',
-          handler: (id) => {}
+          icon: 'mdi-delete',
+          handler: (id) => {
+            console.log('Deleting: ' + id)
+          }
         }
       ],
       propsIcons: [
-        'mdi-other', // none
-        'mdi-phone', // 1 PersonalPhone
-        'mdi-phone', // 2 WorkPhone
-        'mdi-email', // 3 PersonalEmail
-        'mdi-email', // 4 WorkEmail
-        'mdi-phone', // 5 Phone
-        'mdi-email', // 6 Email
-        'mdi-address', // 7 Address
-        'mdi-facebook', // 8 Facebook
-        'mdi-twitter', // 9 Twitter
-        'mdi-github', // 10 Github
-        'mdi-whatsapp', // 11 WhatsApp
-        'mdi-telegram', // 12 Telegram
-        'mdi-link', // 13 Telegram
-        'mdi-note' // 14 Telegram
+        '', // none (not valid)
+        'mdi-other', // 1 other (or custom)
+        'mdi-phone', // 2 PersonalPhone
+        'mdi-phone', // 3 WorkPhone
+        'mdi-email', // 4 PersonalEmail
+        'mdi-email', // 5 WorkEmail
+        'mdi-phone', // 6 Phone
+        'mdi-email', // 7 Email
+        'mdi-address', // 8 Address
+        'mdi-facebook', // 9 Facebook
+        'mdi-twitter', // 10 Twitter
+        'mdi-github', // 11 Github
+        'mdi-whatsapp', // 12 WhatsApp
+        'mdi-telegram', // 13 Telegram
+        'mdi-link', // 14 Telegram
+        'mdi-note' // 15 Telegram
       ]
     }
   },
@@ -114,7 +128,7 @@ export default {
     },
 
     isTypePrimary(t) {
-      const types = [1, 2, 3, 5, 6]
+      const types = [2, 3, 4, 6, 7]
       return types.includes(t)
     },
 
