@@ -36,7 +36,7 @@
                     <v-list-item-content>
                       <v-list-item-subtitle class="text-left"
                         ><v-icon>{{ propTypeIcon(item.type) }}</v-icon>
-                        {{ item.name }} ({{ item.type }})</v-list-item-subtitle
+                        {{ item.name }}</v-list-item-subtitle
                       >
                       <v-list-item-title
                         class="text-left"
@@ -90,24 +90,6 @@ export default {
             console.log('Deleting: ' + id)
           }
         }
-      ],
-      propsIcons: [
-        '', // none (not valid)
-        'mdi-other', // 1 other (or custom)
-        'mdi-phone', // 2 PersonalPhone
-        'mdi-phone', // 3 WorkPhone
-        'mdi-email', // 4 PersonalEmail
-        'mdi-email', // 5 WorkEmail
-        'mdi-phone', // 6 Phone
-        'mdi-email', // 7 Email
-        'mdi-address', // 8 Address
-        'mdi-facebook', // 9 Facebook
-        'mdi-twitter', // 10 Twitter
-        'mdi-github', // 11 Github
-        'mdi-whatsapp', // 12 WhatsApp
-        'mdi-telegram', // 13 Telegram
-        'mdi-link', // 14 Telegram
-        'mdi-note' // 15 Telegram
       ]
     }
   },
@@ -133,7 +115,7 @@ export default {
     },
 
     propTypeIcon(t) {
-      return this.propsIcons[t]
+      return this.$store.state.contactPropertyTypes[t].icon
     }
   }
 }

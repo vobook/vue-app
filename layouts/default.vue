@@ -1,6 +1,6 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer v-model="drawer" app fixed expand-on-hover permanent>
+  <v-app>
+    <v-navigation-drawer app fixed expand-on-hover permanent dark>
       <v-list>
         <v-list-item>
           <v-list-item-title v-text="fullname()"></v-list-item-title>
@@ -10,7 +10,7 @@
         </v-list-item>
 
         <v-list-item
-          v-for="(item, i) in items"
+          v-for="(item, i) in navItems"
           :key="i"
           :to="item.to"
           router
@@ -26,11 +26,10 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar fixed app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
       <v-spacer />
       <v-btn icon @click.stop="rightDrawer = !rightDrawer">
-        <v-icon>mdi-menu</v-icon>
+        <v-icon>mdi-plus-box</v-icon>
       </v-btn>
     </v-app-bar>
     <v-content>
@@ -40,13 +39,19 @@
     </v-content>
     <v-navigation-drawer v-model="rightDrawer" :right="true" temporary fixed>
       <v-list>
-        <v-list-item>
+        <v-list-item
+          v-for="(item, i) in rightNavItems"
+          :key="i"
+          :to="item.to"
+          router
+          exact
+        >
           <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
+            <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
-          <v-list-item-title>items to be added</v-list-item-title>
+          <v-list-item-content>
+            <v-list-item-title v-text="item.title" />
+          </v-list-item-content>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -57,8 +62,7 @@
 export default {
   data() {
     return {
-      drawer: false,
-      items: [
+      navItems: [
         {
           icon: 'mdi-apps',
           title: 'Dashboard',
@@ -68,6 +72,13 @@ export default {
           icon: 'mdi-contacts',
           title: 'Contacts',
           to: '/contacts'
+        }
+      ],
+      rightNavItems: [
+        {
+          icon: 'mdi-account-plus',
+          title: 'New contact...',
+          to: '/new-contact'
         }
       ],
       rightDrawer: false,

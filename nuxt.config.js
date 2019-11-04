@@ -48,7 +48,7 @@ export default {
   ],
 
   router: {
-    middleware: ['load_auth', 'auth']
+    middleware: ['load_auth', 'auth', 'load_static_resources']
   },
 
   /*
