@@ -38,10 +38,9 @@
                         ><v-icon>{{ propTypeIcon(item.type) }}</v-icon>
                         {{ item.name }}</v-list-item-subtitle
                       >
-                      <v-list-item-title
-                        class="text-left"
-                        v-html="item.value"
-                      ></v-list-item-title>
+                      <v-list-item-title class="text-left">{{
+                        item.value
+                      }}</v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
                 </template>
@@ -105,7 +104,7 @@ export default {
           this.elems = resp.data.data
         })
       } catch (e) {
-        // this.$toast.error(e.response.data.error)
+        this.$toast.error(e.response.data.error)
       }
     },
 

@@ -24,6 +24,11 @@ export const mutations = {
     types.forEach(function(el, i) {
       types[i].icon = contactPropertyTypeIcons.icons[el.type]
     })
+    types.unshift({
+      name: 'Zero index, hide me',
+      type: 0,
+      icon: 'mdi-alert-decagram-outline'
+    })
     state.contactPropertyTypes = types
   }
 }

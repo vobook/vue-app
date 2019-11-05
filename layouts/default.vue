@@ -1,11 +1,11 @@
 <template>
   <v-app>
-    <v-navigation-drawer app fixed expand-on-hover permanent dark>
+    <v-navigation-drawer v-model="drawer" app fixed temporary dark>
       <v-list>
         <v-list-item>
           <v-list-item-title v-text="fullname()"></v-list-item-title>
           <v-list-item-icon>
-            <v-icon @click="logout()" title="Logout">mdi-logout</v-icon>
+            <v-icon title="Logout" @click="logout()">mdi-logout</v-icon>
           </v-list-item-icon>
         </v-list-item>
 
@@ -26,10 +26,13 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar fixed app>
+      <v-btn icon @click.stop="drawer = !drawer">
+        <v-icon>mdi-menu</v-icon>
+      </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
       <v-btn icon @click.stop="rightDrawer = !rightDrawer">
-        <v-icon>mdi-plus-box</v-icon>
+        <v-icon color="success">mdi-plus-box</v-icon>
       </v-btn>
     </v-app-bar>
     <v-content>
@@ -81,6 +84,7 @@ export default {
           to: '/new-contact'
         }
       ],
+      drawer: false,
       rightDrawer: false,
       title: 'vobook'
     }

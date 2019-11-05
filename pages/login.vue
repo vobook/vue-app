@@ -3,48 +3,72 @@
     <v-content>
       <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
-          <v-col cols="12" sm="8" md="4">
-            <v-form method="post" @submit.prevent="login">
-              <v-card outlined>
-                <v-card-text>
-                  <p class="display-1 text--primary text-center">
-                    welcome to vobook
-                  </p>
-                  <v-text-field
-                    v-model="email"
-                    label="Login"
-                    name="email"
-                    prepend-icon="mdi-email"
-                    type="text"
-                    autofocus
-                  ></v-text-field>
-                  <v-text-field
-                    v-model="password"
-                    label="Password"
-                    name="password"
-                    prepend-icon="mdi-key"
-                    type="password"
-                  ></v-text-field>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn type="submit" color="primary"
-                    >&nbsp;&nbsp;&nbsp;Submit&nbsp;&nbsp;&nbsp;</v-btn
-                  >
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-form>
-            <p></p>
-            <p class="text-center">
-              <v-btn :nuxt="true" to="/restore-password" outlined small
-                >Restore password</v-btn
-              >
-              <v-btn :nuxt="true" to="/register" outlined small
-                >Create account</v-btn
-              >
-            </p>
-          </v-col>
+          <v-dialog
+            v-model="loginDialog"
+            persistent
+            no-click-animation
+            max-width="400px"
+          >
+            <v-card>
+              <v-card-title>
+                <v-spacer></v-spacer>
+                <div class="headline text-center">welcome to vobook</div>
+                <v-spacer></v-spacer>
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-form method="post" @submit.prevent="login">
+                    <v-row>
+                      <v-col cols="12">
+                        <v-text-field
+                          v-model="email"
+                          label="Login"
+                          name="email"
+                          prepend-icon="mdi-email"
+                          type="text"
+                          autofocus
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                          v-model="password"
+                          label="Password"
+                          name="password"
+                          prepend-icon="mdi-key"
+                          type="password"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" class="text-center">
+                        <v-btn type="submit" color="primary"
+                          >&nbsp;&nbsp;&nbsp;Submit&nbsp;&nbsp;&nbsp;</v-btn
+                        >
+                      </v-col>
+                    </v-row>
+                  </v-form>
+                </v-container>
+              </v-card-text>
+              <v-card-actions class="text-center">
+                <v-spacer></v-spacer>
+                <v-btn
+                  :nuxt="true"
+                  to="/restore-password"
+                  color="blue darken-1"
+                  small
+                  text
+                  >Restore password</v-btn
+                >
+                <v-btn
+                  :nuxt="true"
+                  to="/register"
+                  color="blue darken-1"
+                  small
+                  text
+                  >Create account</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-row>
       </v-container>
     </v-content>
@@ -57,7 +81,8 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      loginDialog: true
     }
   },
   methods: {
