@@ -1,5 +1,3 @@
-import colors from 'vuetify/es5/util/colors'
-
 export default {
   mode: 'spa',
   /*
@@ -48,7 +46,7 @@ export default {
   ],
 
   router: {
-    middleware: ['load_auth', 'auth', 'load_static_resources']
+    middleware: ['load_auth', 'auth', 'load_contact_property_types']
   },
 
   /*

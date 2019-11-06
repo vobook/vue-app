@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-card elevation="3">
     <v-form>
       <v-container>
         <v-row>
@@ -50,18 +50,18 @@
                 ></v-text-field>
               </template>
               <v-date-picker
+                ref="birthdayCalPicker"
                 v-model="form.birthday"
                 no-title
-                ref="birthdayCalPicker"
                 :max="new Date().toISOString().substr(0, 10)"
                 @input="birthdayCal = false"
               ></v-date-picker>
             </v-menu>
           </v-col>
 
-          <v-col v-for="(prop, i) in form.fields" :key="i" cols="12" md="4">
+          <v-col v-for="(prop, i) in form.props" :key="i" cols="12" md="4">
             <v-text-field
-              v-model="form.fields[i].value"
+              v-model="form.props[i].value"
               :label="getPropLabel(prop)"
               :prepend-icon="propTypes()[prop.type].icon"
               :value="prop.value"
@@ -85,17 +85,8 @@
             <v-container>
               <v-row>
                 <v-col cols="12">
-                  <v-text-field label="Email*" required></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    label="Password*"
-                    type="password"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12">
                   <v-select
+                    v-model="activeProp.type"
                     :items="propTypes()"
                     item-text="name"
                     item-value="type"
@@ -121,6 +112,23 @@
                     </template>
                   </v-select>
                 </v-col>
+
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="activeProp.name"
+                    label="Label"
+                    type="text"
+                    required
+                  ></v-text-field>
+                </v-col>
+
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="activeProp.value"
+                    label="Value"
+                    required
+                  ></v-text-field>
+                </v-col>
               </v-row>
             </v-container>
           </v-card-text>
@@ -138,7 +146,7 @@
       </v-dialog>
     </v-row>
 
-    <v-footer padless fixed>
+    <v-footer padless fixed app>
       <v-row class="primary lighten-2">
         <v-col cols="12" class="text-center">
           <v-btn>
@@ -147,7 +155,7 @@
         </v-col>
       </v-row>
     </v-footer>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -160,7 +168,7 @@ export default {
         last_name: '',
         email: '',
         birthday: '',
-        fields: [
+        props: [
           {
             type: 2,
             name: '',
@@ -174,7 +182,13 @@ export default {
         ]
       },
       birthdayCal: false,
-      propDialog: true
+      propDialog: true,
+      activeProp: {
+        prop: null,
+        type: 3,
+        name: '',
+        value: ''
+      }
     }
   },
 
@@ -200,10 +214,6 @@ export default {
       if (prop.name !== '') {
         return prop.name
       }
-
-      console.log(prop)
-
-      console.log(this.propTypes())
 
       return this.propTypes()[prop.type].name
     },

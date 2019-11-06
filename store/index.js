@@ -9,7 +9,6 @@ export const state = () => {
 
 export const mutations = {
   initAuth(state) {
-    console.log('init auth')
     if (localStorage.getItem('auth')) {
       state.auth = JSON.parse(localStorage.getItem('auth'))
     }
@@ -24,21 +23,23 @@ export const mutations = {
     types.forEach(function(el, i) {
       types[i].icon = contactPropertyTypeIcons.icons[el.type]
     })
-    types.unshift({
-      name: 'Zero index, hide me',
-      type: 0,
-      icon: 'mdi-alert-decagram-outline'
-    })
     state.contactPropertyTypes = types
   }
 }
 
-export const actions = {
-  GetContactPropertyTypes({ commit }) {
-    console.log('Loading types STORE')
-
-    this.$axios.$get('contact-property-types/').then((res) => {
-      commit('setContactPropertyTypes', res)
-    })
+export const getters = {
+  getContactPropByType: (state) => (t) => {
+    return state.contactPropertyTypes.find((prop) => prop.type === t)
   }
+}
+
+export const actions = {
+  // getContactPropertyTypes({ commit }) {
+  //   console.log('Loading types STORE')
+  //
+  //   this.$axios.$get('contact-property-types/').then((res) => {
+  //     console.log('Commiting types...')
+  //     commit('setContactPropertyTypes', res)
+  //   })
+  // }
 }

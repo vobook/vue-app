@@ -3,7 +3,7 @@
     <v-container>
       <Waterfall :resizable="true" :gutter-width="5" :gutter-height="5">
         <WaterfallItem v-for="elem in elems" :key="elem.id" :width="300">
-          <v-card tile outlined>
+          <v-card elevation="3">
             <v-card-title dark>
               <span>{{ elem.name }}</span>
               <v-spacer></v-spacer>
@@ -114,7 +114,8 @@ export default {
     },
 
     propTypeIcon(t) {
-      return this.$store.state.contactPropertyTypes[t].icon
+      return this.$store.getters.getContactPropByType(t).icon
+      // return this.$store.state.contactPropertyTypes[t].icon
     }
   }
 }
