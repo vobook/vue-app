@@ -1,9 +1,9 @@
 <template>
   <v-layout>
     <v-container>
-      <Waterfall :resizable="true" :gutter-width="5" :gutter-height="5">
+      <Waterfall :resizable="true" :gutterWidth="10" :gutterHeight="10">
         <WaterfallItem v-for="elem in elems" :key="elem.id" :width="300">
-          <v-card elevation="3">
+          <v-card elevation="2">
             <v-card-title dark>
               <span>{{ elem.name }}</span>
               <v-spacer></v-spacer>

@@ -31,8 +31,8 @@
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
-        <v-icon color="success">mdi-plus-box</v-icon>
+      <v-btn color="success" dark nuxt to="/new-contact" depressed>
+        New contact
       </v-btn>
     </v-app-bar>
     <v-content>
@@ -40,24 +40,6 @@
         <nuxt />
       </v-container>
     </v-content>
-    <v-navigation-drawer v-model="rightDrawer" :right="true" temporary fixed>
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in rightNavItems"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
   </v-app>
 </template>
 
@@ -75,13 +57,6 @@ export default {
           icon: 'mdi-contacts',
           title: 'Contacts',
           to: '/contacts'
-        }
-      ],
-      rightNavItems: [
-        {
-          icon: 'mdi-account-plus',
-          title: 'New contact...',
-          to: '/new-contact'
         }
       ],
       drawer: false,

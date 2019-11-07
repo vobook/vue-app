@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="3">
+  <v-card elevation="2">
     <v-form>
       <v-container>
         <v-row>
@@ -63,7 +63,7 @@
             <v-text-field
               v-model="form.props[i].value"
               :label="getPropLabel(prop)"
-              :prepend-icon="propTypes()[prop.type].icon"
+              :prepend-icon="getPropIcon(prop.type)"
               :value="prop.value"
             ></v-text-field>
           </v-col>
@@ -92,16 +92,12 @@
                     item-value="type"
                     label="Type"
                     required
+                    @change="setActivePropName"
+                    :prepend-icon="
+                      this.$store.getters.getContactPropByType(activeProp.type)
+                        .icon
+                    "
                   >
-                    <template slot="selection" slot-scope="data">
-                      <v-flex xs2>
-                        <v-icon>{{ data.item.icon }}</v-icon>
-                      </v-flex>
-                      <v-flex class="ml-1">
-                        {{ data.item.name }}
-                      </v-flex>
-                    </template>
-
                     <template slot="item" slot-scope="data">
                       <v-flex xs2>
                         <v-icon>{{ data.item.icon }}</v-icon>
@@ -119,6 +115,11 @@
                     label="Label"
                     type="text"
                     required
+                    :prepend-icon="
+                      this.$store.getters.getContactPropByType(activeProp.type)
+                        .icon
+                    "
+                    @change="setActivePropCustomName"
                   ></v-text-field>
                 </v-col>
 
@@ -134,7 +135,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" text @click="propDialog = false"
+            <v-btn color="green darken-1" text @click="saveActiveProp"
               >Save</v-btn
             >
             <v-btn text color="secondary lighten-1" @click="propDialog = false"
@@ -185,8 +186,9 @@ export default {
       propDialog: true,
       activeProp: {
         prop: null,
-        type: 3,
-        name: '',
+        type: 1,
+        name: this.$store.getters.getContactPropByType(1).name,
+        customName: '',
         value: ''
       }
     }
@@ -215,10 +217,64 @@ export default {
         return prop.name
       }
 
-      return this.propTypes()[prop.type].name
+      return this.$store.getters.getContactPropByType(prop.type).name
     },
+
+    getPropIcon(t) {
+      return this.$store.getters.getContactPropByType(t).icon
+    },
+
     propTypes() {
       return this.$store.state.contactPropertyTypes
+    },
+
+    // if user entered its own name for type
+    // then use it
+    //  otherwise use type default name
+    setActivePropName() {
+      if (this.activeProp.customName === '') {
+        this.activeProp.name = this.$store.getters.getContactPropByType(
+          this.activeProp.type
+        ).name
+        return
+      }
+
+      this.activeProp.name = this.activeProp.customName
+    },
+
+    // if active prop name is not same as name of type
+    // set it as custom name
+    // this is needed to check for user input to keep custom name across types (when type changed)
+    // @see setActivePropName
+    setActivePropCustomName() {
+      if (
+        this.$store.getters.getContactPropByType(this.activeProp.type).name !==
+        this.activeProp.name
+      ) {
+        this.activeProp.customName = this.activeProp.name
+      }
+    },
+
+    saveActiveProp() {
+      this.propDialog = false
+      // new prop
+      if (this.activeProp.prop === null) {
+        this.form.props.push({
+          type: this.activeProp.type,
+          name: this.activeProp.name,
+          value: this.activeProp.value
+        })
+
+        // keep type for next
+        // reset name and value
+        this.activeProp.name = this.$store.getters.getContactPropByType(
+          this.activeProp.type
+        ).name
+        this.activeProp.value = ''
+      }
+      // update todo
+      else {
+      }
     }
   }
 }
