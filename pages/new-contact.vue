@@ -1,16 +1,13 @@
 <template>
   <v-card elevation="2">
-    <v-form>
+    <v-form id="createContact" method="post" @submit.prevent="createContact">
       <v-container>
         <v-row>
-          <v-col cols="12" md="4">
-            <v-text-field v-model="form.name" label="Name"></v-text-field>
-          </v-col>
-
           <v-col cols="12" md="4">
             <v-text-field
               v-model="form.first_name"
               label="First name"
+              autofocus
             ></v-text-field>
           </v-col>
 
@@ -26,6 +23,10 @@
               v-model="form.last_name"
               label="Last name"
             ></v-text-field>
+          </v-col>
+
+          <v-col cols="12" md="4">
+            <v-text-field v-model="form.name" label="Nickname"></v-text-field>
           </v-col>
 
           <v-col cols="12" md="4">
@@ -65,13 +66,16 @@
               :label="getPropLabel(prop)"
               :prepend-icon="getPropIcon(prop.type)"
               :value="prop.value"
+              append-icon="mdi-close"
+              @click:append="removeProp(i)"
+              @click:prepend="editProp(i)"
             ></v-text-field>
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" md="4">
-            <v-btn color="primary" text dark @click.stop="propDialog = true"
-              >Add another prop...</v-btn
+            <v-btn color="primary" dark text @click.stop="addProp()"
+              >Add property</v-btn
             >
           </v-col>
         </v-row>
@@ -92,11 +96,11 @@
                     item-value="type"
                     label="Type"
                     required
-                    @change="setActivePropName"
                     :prepend-icon="
                       this.$store.getters.getContactPropByType(activeProp.type)
                         .icon
                     "
+                    @change="setActivePropName"
                   >
                     <template slot="item" slot-scope="data">
                       <v-flex xs2>
@@ -127,7 +131,7 @@
                   <v-text-field
                     v-model="activeProp.value"
                     label="Value"
-                    required
+                    @keyup.enter="saveActiveProp()"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -136,7 +140,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="green darken-1" text @click="saveActiveProp"
-              >Save</v-btn
+              >Add</v-btn
             >
             <v-btn text color="secondary lighten-1" @click="propDialog = false"
               >Cancel</v-btn
@@ -150,8 +154,8 @@
     <v-footer padless fixed app>
       <v-row class="primary lighten-2">
         <v-col cols="12" class="text-center">
-          <v-btn>
-            Save contact
+          <v-btn type="submit" form="createContact">
+            Save new contact
           </v-btn>
         </v-col>
       </v-row>
@@ -183,9 +187,9 @@ export default {
         ]
       },
       birthdayCal: false,
-      propDialog: true,
+      propDialog: false,
       activeProp: {
-        prop: null,
+        propIdx: null,
         type: 1,
         name: this.$store.getters.getContactPropByType(1).name,
         customName: '',
@@ -255,10 +259,30 @@ export default {
       }
     },
 
+    addProp(i) {
+      this.activeProp.propIdx = null
+      this.activeProp.name = ''
+      this.activeProp.value = ''
+      this.propDialog = true
+    },
+
+    removeProp(i) {
+      this.form.props.splice(i, 1)
+    },
+
+    editProp(i) {
+      const prop = this.form.props[i]
+      this.activeProp.propIdx = i
+      this.activeProp.type = prop.type
+      this.activeProp.name = prop.name
+      this.activeProp.value = prop.value
+      this.propDialog = true
+    },
+
     saveActiveProp() {
       this.propDialog = false
       // new prop
-      if (this.activeProp.prop === null) {
+      if (this.activeProp.propIdx === null) {
         this.form.props.push({
           type: this.activeProp.type,
           name: this.activeProp.name,
@@ -274,6 +298,23 @@ export default {
       }
       // update todo
       else {
+        const i = this.activeProp.propIdx
+        const prop = this.form.props[i]
+        prop.type = this.activeProp.type
+        prop.name = this.activeProp.name
+        prop.value = this.activeProp.value
+        this.form.props[i] = prop
+      }
+    },
+
+    async createContact() {
+      try {
+        await this.$axios.$post('/contacts/', this.form).then((resp) => {
+          this.$toast.info('Contact saved')
+        })
+      } catch (e) {
+        console.log(e.response)
+        this.$toast.error(e.response.data.error)
       }
     }
   }

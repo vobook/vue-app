@@ -31,12 +31,23 @@
 
             <v-card-text>
               <v-list>
+                <v-list-item v-if="elem.birthday !== null">
+                  <v-list-item-content>
+                    <v-list-item-subtitle class="text-left"
+                      ><v-icon>mdi-cake-variant</v-icon
+                      >Birthday</v-list-item-subtitle
+                    >
+                    <v-list-item-title class="text-left">{{
+                      formatBirthdayDate(elem.birthday)
+                    }}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
                 <template v-for="item in elem.props">
                   <v-list-item v-if="isTypePrimary(item.type)" :key="item.id">
                     <v-list-item-content>
                       <v-list-item-subtitle class="text-left"
                         ><v-icon>{{ propTypeIcon(item.type) }}</v-icon>
-                        {{ item.name }}</v-list-item-subtitle
+                        {{ propName(item) }}</v-list-item-subtitle
                       >
                       <v-list-item-title class="text-left">{{
                         item.value
@@ -46,22 +57,6 @@
                 </template>
               </v-list>
             </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-
-              <v-btn icon>
-                <v-icon>mdi-bookmark</v-icon>
-              </v-btn>
-
-              <v-btn icon>
-                <v-icon>mdi-share-variant</v-icon>
-              </v-btn>
-            </v-card-actions>
           </v-card>
         </WaterfallItem>
       </Waterfall>
@@ -70,6 +65,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   data() {
     return {
@@ -115,7 +111,18 @@ export default {
 
     propTypeIcon(t) {
       return this.$store.getters.getContactPropByType(t).icon
-      // return this.$store.state.contactPropertyTypes[t].icon
+    },
+
+    propName(prop) {
+      if (prop.name === '') {
+        return this.$store.getters.getContactPropByType(prop.type).name
+      }
+
+      return prop.name
+    },
+
+    formatBirthdayDate(d) {
+      return moment(d).format('Do MMMM, YYYY')
     }
   }
 }

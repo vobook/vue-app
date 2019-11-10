@@ -14,8 +14,8 @@ Vue.use(Vuetify, {
 })
 
 Vue.use(VuetifyToast, {
-  x: 'right', // default
-  y: 'bottom', // default
+  x: 'center', // default
+  y: 'top', // default
   color: 'info', // default
   icon: 'mdi-information',
   iconColor: '', // default
@@ -24,7 +24,7 @@ Vue.use(VuetifyToast, {
   dismissable: true, // default
   multiLine: false, // default
   vertical: false, // default
-  queueable: false, // default
+  queueable: true, // default
   showClose: true, // default
   closeText: '', // default
   closeIcon: 'mdi-close', // default

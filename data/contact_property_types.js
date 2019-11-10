@@ -1,5 +1,5 @@
 exports.icons = {
-  1: 'mdi-message-processing', // 1 other (or custom)
+  1: 'mdi-card-text', // 1 other (or custom)
   2: 'mdi-cellphone-android', // 2 PersonalPhone
   3: 'mdi-phone', // 3 WorkPhone
   4: 'mdi-email', // 4 PersonalEmail
