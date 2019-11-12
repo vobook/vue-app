@@ -96,7 +96,7 @@ export default {
           .then((resp) => {
             if (resp.token) {
               this.$store.commit('setAuth', resp)
-              this.$router.push('/')
+              this.$router.push('/contacts')
             }
           })
       } catch (e) {

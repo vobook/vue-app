@@ -1,6 +1,6 @@
 <template>
   <v-card elevation="2">
-    <v-form id="createContact" method="post" @submit.prevent="createContact">
+    <v-form id="saveContact" method="post" @submit.prevent="saveContact">
       <v-container>
         <v-row>
           <v-col cols="12" md="4">
@@ -8,6 +8,7 @@
               v-model="form.first_name"
               label="First name"
               autofocus
+              large
             ></v-text-field>
           </v-col>
 
@@ -73,8 +74,8 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" md="4">
-            <v-btn color="primary" dark text @click.stop="addProp()"
+          <v-col cols="12" class="text-center">
+            <v-btn color="primary" dark outlined @click.stop="addProp()"
               >Add property</v-btn
             >
           </v-col>
@@ -154,8 +155,8 @@
     <v-footer padless fixed app>
       <v-row class="primary lighten-2">
         <v-col cols="12" class="text-center">
-          <v-btn type="submit" form="createContact">
-            Save new contact
+          <v-btn type="submit" form="saveContact"
+            >{{ !id ? 'Save new contact' : 'Update contact' }}
           </v-btn>
         </v-col>
       </v-row>
@@ -164,9 +165,14 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   data() {
     return {
+      // this component used to create and update contacts
+      // if id is null, then use form for creating contact
+      // otherwise for editing
+      id: null,
       form: {
         name: '',
         first_name: '',
@@ -205,7 +211,17 @@ export default {
     }
   },
 
-  beforeMount() {},
+  mounted() {},
+
+  beforeMount() {
+    const id = this.$route.params.id
+    if (!id) {
+      return
+    }
+
+    this.id = id
+    this.fetchContact(id)
+  },
 
   methods: {
     parseDate(date) {
@@ -295,9 +311,7 @@ export default {
           this.activeProp.type
         ).name
         this.activeProp.value = ''
-      }
-      // update todo
-      else {
+      } else {
         const i = this.activeProp.propIdx
         const prop = this.form.props[i]
         prop.type = this.activeProp.type
@@ -307,13 +321,38 @@ export default {
       }
     },
 
-    async createContact() {
+    async saveContact() {
+      if (this.id === null) {
+        try {
+          await this.$axios.$post('/contacts/', this.form).then((resp) => {
+            this.id = resp.id
+            this.$toast.info('New contact added')
+          })
+        } catch (e) {
+          this.$toast.error(e.response.data.error)
+        }
+      } else {
+        try {
+          await this.$axios
+            .$put('/contacts/' + this.id + '/', this.form)
+            .then((resp) => {
+              this.$toast.info('Contact updated')
+            })
+        } catch (e) {
+          this.$toast.error(e.response.data.error)
+        }
+      }
+    },
+
+    async fetchContact(id) {
       try {
-        await this.$axios.$post('/contacts/', this.form).then((resp) => {
-          this.$toast.info('Contact saved')
+        await this.$axios.$get('/contacts/' + id + '/').then((resp) => {
+          if (resp.birthday !== null) {
+            resp.birthday = moment(resp.birthday).format('YYYY-MM-DD')
+          }
+          this.form = resp
         })
       } catch (e) {
-        console.log(e.response)
         this.$toast.error(e.response.data.error)
       }
     }

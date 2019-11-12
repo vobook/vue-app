@@ -46,7 +46,14 @@ export default {
   ],
 
   router: {
-    middleware: ['load_auth', 'auth', 'load_contact_property_types']
+    middleware: ['load_auth', 'auth', 'load_contact_property_types'],
+    extendRoutes(routes, resolve) {
+      routes.push({
+        name: 'edit-contact',
+        path: '/edit-contact/:id',
+        component: resolve(__dirname, 'pages/new-contact')
+      })
+    }
   },
 
   /*

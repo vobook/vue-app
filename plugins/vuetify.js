@@ -24,7 +24,7 @@ Vue.use(VuetifyToast, {
   dismissable: true, // default
   multiLine: false, // default
   vertical: false, // default
-  queueable: true, // default
+  queueable: false, // default
   showClose: true, // default
   closeText: '', // default
   closeIcon: 'mdi-close', // default
