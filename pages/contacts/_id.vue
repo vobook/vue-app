@@ -36,9 +36,12 @@
     </v-card-text>
     <v-divider></v-divider>
     <v-card-actions>
+      <v-btn text :to="'/edit-contact/' + elem.id">Edit</v-btn>
       <v-spacer></v-spacer>
-      <v-btn text :to="'edit-contact/' + elem.id">Full Report</v-btn>
-      <v-spacer></v-spacer>
+      <v-btn text @click="deleteContact()" v-if="elem.deleted_at === null"
+        >Delete</v-btn
+      >
+      <v-btn text @click="restoreContact()" v-else>Restore</v-btn>
     </v-card-actions>
   </v-card>
 </template>
