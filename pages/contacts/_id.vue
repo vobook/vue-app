@@ -1,0 +1,129 @@
+<template>
+  <v-card elevation="2">
+    <v-card-title class="display-3">
+      {{ elem.name }}
+      <v-subheader class="title" v-if="showFullName()">{{
+        this.fullName()
+      }}</v-subheader>
+    </v-card-title>
+
+    <v-card-text>
+      <v-row>
+        <v-col cols="12" md="4" v-if="elem.birthday !== null">
+          <v-list-item-content>
+            <v-list-item-subtitle class="text-left"
+              ><v-icon>mdi-cake-variant</v-icon>Birthday</v-list-item-subtitle
+            >
+            <v-list-item-title class="text-left">{{
+              formatBirthdayDate(elem.birthday)
+            }}</v-list-item-title>
+          </v-list-item-content>
+        </v-col>
+        <template v-for="item in elem.props">
+          <v-col cols="12" md="4" :key="item.id" v-if="item.value !== ''">
+            <v-list-item-content>
+              <v-list-item-subtitle class="text-left"
+                ><v-icon>{{ propTypeIcon(item.type) }}</v-icon>
+                {{ propName(item) }}</v-list-item-subtitle
+              >
+              <v-list-item-title class="text-left">
+                {{ item.value }}</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-col>
+        </template>
+      </v-row>
+    </v-card-text>
+    <v-divider></v-divider>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn text :to="'edit-contact/' + elem.id">Full Report</v-btn>
+      <v-spacer></v-spacer>
+    </v-card-actions>
+  </v-card>
+</template>
+
+<script>
+import moment from 'moment'
+export default {
+  data() {
+    return {
+      id: null,
+      elem: {}
+    }
+  },
+  beforeMount() {
+    const id = this.$route.params.id
+    if (!id) {
+      return
+    }
+
+    this.id = id
+    this.fetchContact(id)
+  },
+
+  methods: {
+    formatBirthdayDate(d) {
+      if (d === null) {
+        return 'unknown'
+      }
+      return moment(d).format('Do MMMM, YYYY')
+    },
+
+    getPropLabel(prop) {
+      if (prop.name !== '') {
+        return prop.name
+      }
+
+      return this.$store.getters.getContactPropByType(prop.type).name
+    },
+
+    getPropIcon(t) {
+      return this.$store.getters.getContactPropByType(t).icon
+    },
+
+    propTypes() {
+      return this.$store.state.contactPropertyTypes
+    },
+
+    propTypeIcon(t) {
+      return this.$store.getters.getContactPropByType(t).icon
+    },
+
+    propName(prop) {
+      if (prop.name === '') {
+        return this.$store.getters.getContactPropByType(prop.type).name
+      }
+
+      return prop.name
+    },
+
+    showFullName() {
+      return this.elem.first_name + ' ' + this.elem.last_name !== this.elem.name
+    },
+
+    fullName() {
+      return (
+        this.elem.first_name +
+        ' ' +
+        this.elem.middle_name +
+        ' ' +
+        this.elem.last_name
+      )
+    },
+
+    async fetchContact(id) {
+      try {
+        await this.$axios.$get('/contacts/' + id + '/').then((resp) => {
+          if (resp.birthday !== null) {
+            resp.birthday = moment(resp.birthday).format('YYYY-MM-DD')
+          }
+          this.elem = resp
+        })
+      } catch (e) {
+        this.$toast.error(e.response.data.error)
+      }
+    }
+  }
+}
+</script>

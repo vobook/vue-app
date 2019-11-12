@@ -75,7 +75,7 @@
         </v-row>
         <v-row>
           <v-col cols="12" class="text-center">
-            <v-btn color="primary" dark outlined @click.stop="addProp()"
+            <v-btn color="primary" text @click.stop="addProp()"
               >Add property</v-btn
             >
           </v-col>

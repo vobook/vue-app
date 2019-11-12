@@ -15,18 +15,22 @@
             v-if="elem.deleted_at === null"
           >
             <v-hover v-slot:default="{ hover }">
-              <v-card :class="hover ? 'contactCardHovered' : 'contactCard'">
-                <v-card-title>
+              <v-card
+                :class="hover ? 'contactCardHovered' : 'contactCard'"
+                nuxt
+                :to="'contacts/' + elem.id"
+              >
+                <v-card-title class="text-left">
                   <span>{{ elem.name }}</span>
                   <v-spacer></v-spacer>
-                  <v-menu bottom left transition="fade-transition">
+                  <v-menu bottom left transition="fade-transition" fixed>
                     <template v-slot:activator="{ on }">
-                      <v-btn icon v-on="on">
+                      <v-btn v-on:click.prevent icon v-on="on">
                         <v-icon dark>mdi-dots-vertical</v-icon>
                       </v-btn>
                     </template>
 
-                    <v-list dark>
+                    <v-list dark color="primary">
                       <v-list-item
                         v-for="(act, x) in actions"
                         :key="x"
@@ -55,7 +59,7 @@
                     </v-list-item>
                     <template v-for="item in elem.props">
                       <v-list-item
-                        v-if="isTypePrimary(item.type)"
+                        v-if="isTypePrimary(item.type) && item.value !== ''"
                         :key="item.id"
                       >
                         <v-list-item-content>
@@ -147,16 +151,17 @@ export default {
       return this.$store.getters.getContactPropByType(t).icon
     },
 
+    contactClicked(ev, id) {
+      console.log(ev)
+      console.log('clicked: ' + id)
+    },
+
     propName(prop) {
       if (prop.name === '') {
         return this.$store.getters.getContactPropByType(prop.type).name
       }
 
       return prop.name
-    },
-
-    contactByID(id) {
-      return this.elems.find((e) => e.id === id)
     },
 
     async restoreContact(idx) {
