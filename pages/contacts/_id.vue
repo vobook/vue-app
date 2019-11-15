@@ -1,49 +1,58 @@
 <template>
-  <v-card elevation="2">
+  <div>
     <v-card-title class="display-3">
       {{ elem.name }}
       <v-subheader class="title" v-if="showFullName()">{{
         this.fullName()
       }}</v-subheader>
     </v-card-title>
-
-    <v-card-text>
-      <v-row>
-        <v-col cols="12" md="4" v-if="elem.birthday !== null">
-          <v-list-item-content>
-            <v-list-item-subtitle class="text-left"
-              ><v-icon>mdi-cake-variant</v-icon>Birthday</v-list-item-subtitle
-            >
-            <v-list-item-title class="text-left">{{
-              formatBirthdayDate(elem.birthday)
-            }}</v-list-item-title>
-          </v-list-item-content>
-        </v-col>
-        <template v-for="item in elem.props">
-          <v-col cols="12" md="4" :key="item.id" v-if="item.value !== ''">
+    <v-card elevation="2">
+      <v-card-text>
+        <v-row>
+          <v-col cols="12" md="4" v-if="elem.birthday !== null">
             <v-list-item-content>
               <v-list-item-subtitle class="text-left"
-                ><v-icon>{{ propTypeIcon(item.type) }}</v-icon>
-                {{ propName(item) }}</v-list-item-subtitle
+                ><v-icon>mdi-cake-variant</v-icon>Birthday</v-list-item-subtitle
               >
-              <v-list-item-title class="text-left">
-                {{ item.value }}</v-list-item-title
-              >
+              <v-list-item-title class="text-left">{{
+                formatBirthdayDate(elem.birthday)
+              }}</v-list-item-title>
             </v-list-item-content>
           </v-col>
-        </template>
-      </v-row>
-    </v-card-text>
-    <v-divider></v-divider>
-    <v-card-actions>
-      <v-btn text :to="'/edit-contact/' + elem.id">Edit</v-btn>
-      <v-spacer></v-spacer>
-      <v-btn text @click="deleteContact()" v-if="elem.deleted_at === null"
-        >Delete</v-btn
-      >
-      <v-btn text @click="restoreContact()" v-else>Restore</v-btn>
-    </v-card-actions>
-  </v-card>
+          <template v-for="item in elem.props">
+            <v-col cols="12" md="4" :key="item.id" v-if="item.value !== ''">
+              <v-list-item-content>
+                <v-list-item-subtitle class="text-left"
+                  ><v-icon>{{ propTypeIcon(item.type) }}</v-icon>
+                  {{ propName(item) }}</v-list-item-subtitle
+                >
+                <v-list-item-title class="text-left">
+                  {{ item.value }}</v-list-item-title
+                >
+              </v-list-item-content>
+            </v-col>
+          </template>
+        </v-row>
+      </v-card-text>
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-btn color="primary" depressed :to="'/edit-contact/' + elem.id"
+          ><v-icon left>mdi-pencil</v-icon> Edit</v-btn
+        >
+        <v-spacer></v-spacer>
+        <v-btn
+          color="error"
+          depressed
+          @click="deleteContact()"
+          v-if="elem.deleted_at === null"
+          ><v-icon left>mdi-delete</v-icon> Delete</v-btn
+        >
+        <v-btn color="success" depressed @click="restoreContact()" v-else
+          ><v-icon left>mdi-delete-restore</v-icon>Restore</v-btn
+        >
+      </v-card-actions>
+    </v-card>
+  </div>
 </template>
 
 <script>
@@ -122,6 +131,28 @@ export default {
             resp.birthday = moment(resp.birthday).format('YYYY-MM-DD')
           }
           this.elem = resp
+        })
+      } catch (e) {
+        this.$toast.error(e.response.data.error)
+      }
+    },
+
+    async deleteContact() {
+      try {
+        await this.$axios.$put('/trash-contacts/', [this.id]).then((resp) => {
+          this.elem.deleted_at = moment().format()
+          this.$toast.error('Contact "' + this.elem.name + '" moved to trash')
+        })
+      } catch (e) {
+        this.$toast.error(e.response.data.error)
+      }
+    },
+
+    async restoreContact() {
+      try {
+        await this.$axios.$put('/restore-contacts/', [this.id]).then((resp) => {
+          this.elem.deleted_at = null
+          this.$toast.success('Contact "' + this.elem.name + '" restored')
         })
       } catch (e) {
         this.$toast.error(e.response.data.error)
