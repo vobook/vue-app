@@ -26,7 +26,6 @@
     "moment": "^2.24.0",
     "nuxt": "^2.0.0",
     "v-hotkey": "^0.7.1",
-    "vue-masonry": "^0.11.8",
     "vue2-waterfall": "^2.0.3",
     "vuetify-toast-snackbar": "^0.6.1"
   },

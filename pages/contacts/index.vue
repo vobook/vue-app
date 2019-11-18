@@ -86,7 +86,12 @@
 
 <script>
 import moment from 'moment'
+import { Waterfall, WaterfallItem } from 'vue2-waterfall'
 export default {
+  components: {
+    Waterfall,
+    WaterfallItem
+  },
   data() {
     return {
       elems: null,

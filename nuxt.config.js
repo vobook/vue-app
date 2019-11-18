@@ -20,7 +20,7 @@ export default {
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: '#fff' },
+  loading: { color: '#008c1d' },
   /*
    ** Global CSS
    */
@@ -28,7 +28,10 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/axios', '~/plugins/vuetify'],
+  plugins: [
+    '~/plugins/axios',
+    { src: '~/plugins/vuetify-client', mode: 'client' }
+  ],
   /*
    ** Nuxt.js dev-modules
    */
@@ -61,7 +64,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: 'http://localhost:8080/api'
+    baseURL: process.env.VOBOOK_API_URL || 'http://localhost:8080/api'
   },
   /*
    ** vuetify module configuration
