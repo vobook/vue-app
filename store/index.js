@@ -9,7 +9,7 @@ export const state = () => {
 
 export const mutations = {
   initAuth(state) {
-    if (localStorage.getItem('auth')) {
+    if (process.browser && localStorage.getItem('auth')) {
       state.auth = JSON.parse(localStorage.getItem('auth'))
     }
   },
@@ -33,13 +33,4 @@ export const getters = {
   }
 }
 
-export const actions = {
-  // getContactPropertyTypes({ commit }) {
-  //   console.log('Loading types STORE')
-  //
-  //   this.$axios.$get('contact-property-types/').then((res) => {
-  //     console.log('Commiting types...')
-  //     commit('setContactPropertyTypes', res)
-  //   })
-  // }
-}
+export const actions = {}

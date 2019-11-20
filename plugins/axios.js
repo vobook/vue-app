@@ -1,10 +1,11 @@
-const publicRoutes = require('~/routes/public_routes.js')
+// const publicRoutes = require('~/routes/public_routes.js')
 
 export default function({ $axios, store, route, redirect }) {
   $axios.onRequest((config) => {
     config.headers.common['X-Client'] = '1'
 
-    if (store.state.auth && !publicRoutes.names.includes(route.name)) {
+    // if (store.state.auth && !publicRoutes.names.includes(route.name)) {
+    if (store.state.auth) {
       config.headers.common.Authorization = 'Bearer ' + store.state.auth.token
     }
   })

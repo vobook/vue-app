@@ -10,9 +10,9 @@
       <Waterfall :resizable="true" :gutterWidth="10" :gutterHeight="10">
         <template v-for="(elem, i) in elems">
           <WaterfallItem
+            v-if="elem.deleted_at === null"
             :key="elem.id"
             :width="300"
-            v-if="elem.deleted_at === null"
           >
             <v-hover v-slot:default="{ hover }">
               <v-card
@@ -25,7 +25,7 @@
                   <v-spacer></v-spacer>
                   <v-menu bottom left transition="fade-transition" fixed>
                     <template v-slot:activator="{ on }">
-                      <v-btn v-on:click.prevent icon v-on="on">
+                      <v-btn icon @click.prevent v-on="on">
                         <v-icon dark>mdi-dots-vertical</v-icon>
                       </v-btn>
                     </template>
@@ -139,8 +139,8 @@ export default {
   methods: {
     async loadContacts() {
       try {
-        await this.$axios.get('/contacts/').then((resp) => {
-          this.elems = resp.data.data
+        await this.$axios.$get('/contacts/').then((resp) => {
+          this.elems = resp.data
         })
       } catch (e) {
         this.$toast.error(e.response.data.error)
@@ -154,11 +154,6 @@ export default {
 
     propTypeIcon(t) {
       return this.$store.getters.getContactPropByType(t).icon
-    },
-
-    contactClicked(ev, id) {
-      console.log(ev)
-      console.log('clicked: ' + id)
     },
 
     propName(prop) {
