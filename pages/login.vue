@@ -100,7 +100,11 @@ export default {
             }
           })
       } catch (e) {
-        this.$toast.error(e.response.data.error)
+        this.$notify({
+          type: 'error',
+          title: 'Failed to login',
+          text: e.response.data.error
+        })
       }
     }
   }

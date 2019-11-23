@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <notifications position="bottom center" />
     <v-navigation-drawer v-model="drawer" app fixed temporary dark>
       <v-list>
         <v-list-item>
@@ -88,5 +89,9 @@ export default {
 <style>
 #app {
   background-color: #dddddd;
+}
+
+.vue-notification {
+  font-size: 16px !important;
 }
 </style>

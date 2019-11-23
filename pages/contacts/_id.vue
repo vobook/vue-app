@@ -2,14 +2,14 @@
   <div>
     <v-card-title class="display-3">
       {{ elem.name }}
-      <v-subheader class="title" v-if="showFullName()">{{
-        this.fullName()
+      <v-subheader v-if="showFullName()" class="title">{{
+        fullName()
       }}</v-subheader>
     </v-card-title>
     <v-card elevation="2">
       <v-card-text>
         <v-row>
-          <v-col cols="12" md="4" v-if="elem.birthday !== null">
+          <v-col v-if="elem.birthday !== null" cols="12" md="4">
             <v-list-item-content>
               <v-list-item-subtitle class="text-left"
                 ><v-icon>mdi-cake-variant</v-icon>Birthday</v-list-item-subtitle
@@ -20,7 +20,7 @@
             </v-list-item-content>
           </v-col>
           <template v-for="item in elem.props">
-            <v-col cols="12" md="4" :key="item.id" v-if="item.value !== ''">
+            <v-col v-if="item.value !== ''" :key="item.id" cols="12" md="4">
               <v-list-item-content>
                 <v-list-item-subtitle class="text-left"
                   ><v-icon>{{ propTypeIcon(item.type) }}</v-icon>
@@ -41,13 +41,13 @@
         >
         <v-spacer></v-spacer>
         <v-btn
+          v-if="elem.deleted_at === null"
           color="error"
           depressed
           @click="deleteContact()"
-          v-if="elem.deleted_at === null"
           ><v-icon left>mdi-delete</v-icon> Delete</v-btn
         >
-        <v-btn color="success" depressed @click="restoreContact()" v-else
+        <v-btn v-else color="success" depressed @click="restoreContact()"
           ><v-icon left>mdi-delete-restore</v-icon>Restore</v-btn
         >
       </v-card-actions>
@@ -133,7 +133,11 @@ export default {
           this.elem = resp
         })
       } catch (e) {
-        this.$toast.error(e.response.data.error)
+        this.$notify({
+          type: 'error',
+          title: 'Failed to load contact',
+          text: e.response.data.error
+        })
       }
     },
 
@@ -141,10 +145,14 @@ export default {
       try {
         await this.$axios.$put('/trash-contacts/', [this.id]).then((resp) => {
           this.elem.deleted_at = moment().format()
-          this.$toast.error('Contact "' + this.elem.name + '" moved to trash')
+          this.$notify('Contact "' + this.elem.name + '" moved to trash')
         })
       } catch (e) {
-        this.$toast.error(e.response.data.error)
+        this.$notify({
+          type: 'error',
+          title: 'Failed to delete contact',
+          text: e.response.data.error
+        })
       }
     },
 
@@ -152,10 +160,14 @@ export default {
       try {
         await this.$axios.$put('/restore-contacts/', [this.id]).then((resp) => {
           this.elem.deleted_at = null
-          this.$toast.success('Contact "' + this.elem.name + '" restored')
+          this.$notify('Contact "' + this.elem.name + '" restored')
         })
       } catch (e) {
-        this.$toast.error(e.response.data.error)
+        this.$notify({
+          type: 'error',
+          title: 'Failed to restore contact',
+          text: e.response.data.error
+        })
       }
     }
   }

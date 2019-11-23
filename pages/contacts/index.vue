@@ -124,7 +124,11 @@ export default {
                   this.snack.show = true
                 })
             } catch (e) {
-              this.$toast.error(e.response.data.error)
+              this.$notify({
+                type: 'error',
+                title: 'Failed to delete contact',
+                text: e.response.data.error
+              })
             }
           }
         }
@@ -143,7 +147,11 @@ export default {
           this.elems = resp.data
         })
       } catch (e) {
-        this.$toast.error(e.response.data.error)
+        this.$notify({
+          type: 'error',
+          title: 'Failed to load contacts',
+          text: e.response.data.error
+        })
       }
     },
 
@@ -170,10 +178,14 @@ export default {
       try {
         await this.$axios.$put('/restore-contacts/', [elem.id]).then((resp) => {
           this.elems[idx].deleted_at = null
-          this.$toast.success('Contact "' + elem.name + '" restored')
+          this.$notify('Contact "' + elem.name + '" restored')
         })
       } catch (e) {
-        this.$toast.error(e.response.data.error)
+        this.$notify({
+          type: 'error',
+          title: 'Failed to restore contact',
+          text: e.response.data.error
+        })
       }
     },
 

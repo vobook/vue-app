@@ -326,20 +326,28 @@ export default {
         try {
           await this.$axios.$post('/contacts/', this.form).then((resp) => {
             this.id = resp.id
-            this.$toast.info('New contact added')
+            this.$notify('New contact added')
           })
         } catch (e) {
-          this.$toast.error(e.response.data.error)
+          this.$notify({
+            type: 'error',
+            title: 'Failed to save contact',
+            text: e.response.data.error
+          })
         }
       } else {
         try {
           await this.$axios
             .$put('/contacts/' + this.id + '/', this.form)
             .then((resp) => {
-              this.$toast.info('Contact updated')
+              this.$notify('Contact updated')
             })
         } catch (e) {
-          this.$toast.error(e.response.data.error)
+          this.$notify({
+            type: 'error',
+            title: 'Failed to update contact',
+            text: e.response.data.error
+          })
         }
       }
     },
@@ -353,7 +361,11 @@ export default {
           this.form = resp
         })
       } catch (e) {
-        this.$toast.error(e.response.data.error)
+        this.$notify({
+          type: 'error',
+          title: 'Failed to load contacts',
+          text: e.response.data.error
+        })
       }
     }
   }
