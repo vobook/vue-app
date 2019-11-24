@@ -12,7 +12,7 @@
             <v-card>
               <v-card-title>
                 <v-spacer></v-spacer>
-                <div class="headline text-center">vobook</div>
+                <div class="headline text-center">welcome to vobook</div>
                 <v-spacer></v-spacer>
               </v-card-title>
               <v-card-text>
