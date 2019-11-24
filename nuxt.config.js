@@ -1,5 +1,9 @@
 export default {
   mode: 'universal',
+  server: {
+    host: process.env.VOBOOK_HOST || 'localhost',
+    port: process.env.VOBOOK_PORT || 3000
+  },
   /*
    ** Headers of the page
    */
