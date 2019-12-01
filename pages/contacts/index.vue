@@ -46,14 +46,14 @@
                 </v-card-title>
                 <v-card-text>
                   <v-list>
-                    <v-list-item v-if="elem.birthday !== null">
+                    <v-list-item v-if="hasBirthday(elem)">
                       <v-list-item-content>
                         <v-list-item-subtitle class="text-left"
                           ><v-icon>mdi-cake-variant</v-icon
                           >Birthday</v-list-item-subtitle
                         >
                         <v-list-item-title class="text-left">{{
-                          formatBirthdayDate(elem.birthday)
+                          formatBirthdayDate(elem)
                         }}</v-list-item-title>
                       </v-list-item-content>
                     </v-list-item>
@@ -87,6 +87,8 @@
 <script>
 import moment from 'moment'
 import { Waterfall, WaterfallItem } from 'vue2-waterfall'
+import mixins from './mixins.js'
+
 export default {
   components: {
     Waterfall,
@@ -137,6 +139,8 @@ export default {
   },
 
   beforeMount() {
+    this.hasBirthday = mixins.hasBirthday
+    this.formatBirthdayDate = mixins.formatBirthdayDate
     this.loadContacts()
   },
 
@@ -187,10 +191,6 @@ export default {
           text: e.response.data.error
         })
       }
-    },
-
-    formatBirthdayDate(d) {
-      return moment(d).format('Do MMMM, YYYY')
     }
   }
 }

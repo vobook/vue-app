@@ -9,13 +9,13 @@
     <v-card elevation="2">
       <v-card-text>
         <v-row>
-          <v-col v-if="elem.birthday !== null" cols="12" md="4">
+          <v-col v-if="hasBirthday(elem)" cols="12" md="4">
             <v-list-item-content>
               <v-list-item-subtitle class="text-left"
                 ><v-icon>mdi-cake-variant</v-icon>Birthday</v-list-item-subtitle
               >
               <v-list-item-title class="text-left">{{
-                formatBirthdayDate(elem.birthday)
+                formatBirthdayDate(elem)
               }}</v-list-item-title>
             </v-list-item-content>
           </v-col>
@@ -57,6 +57,7 @@
 
 <script>
 import moment from 'moment'
+import mixins from './mixins.js'
 export default {
   data() {
     return {
@@ -65,6 +66,9 @@ export default {
     }
   },
   beforeMount() {
+    this.hasBirthday = mixins.hasBirthday
+    this.formatBirthdayDate = mixins.formatBirthdayDate
+
     const id = this.$route.params.id
     if (!id) {
       return
@@ -75,13 +79,6 @@ export default {
   },
 
   methods: {
-    formatBirthdayDate(d) {
-      if (d === null) {
-        return 'unknown'
-      }
-      return moment(d).format('Do MMMM, YYYY')
-    },
-
     getPropLabel(prop) {
       if (prop.name !== '') {
         return prop.name

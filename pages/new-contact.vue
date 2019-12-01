@@ -31,34 +31,30 @@
           </v-col>
 
           <v-col cols="12" md="4">
-            <v-menu
-              ref="birthdayCal"
-              v-model="birthdayCal"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
+            <v-row no-gutters>
+              <v-col cols="12" md="4">
                 <v-text-field
-                  v-model="form.birthday"
-                  label="Birthday"
-                  readonly
-                  persistent-hint
-                  prepend-icon="mdi-calendar"
-                  @blur="form.birthday = parseDate(form.birthday)"
-                  v-on="on"
+                  v-model="form.dob_day"
+                  label="Day of birth"
                 ></v-text-field>
-              </template>
-              <v-date-picker
-                ref="birthdayCalPicker"
-                v-model="form.birthday"
-                no-title
-                :max="new Date().toISOString().substr(0, 10)"
-                @input="birthdayCal = false"
-              ></v-date-picker>
-            </v-menu>
+              </v-col>
+              <v-col cols="12" md="4">
+                <v-text-field
+                  id="dobMonthInput"
+                  v-model="normalizedDobMonth"
+                  label="Month of birth"
+                  @focus="monthDialog = true"
+                >
+                  ></v-text-field
+                >
+              </v-col>
+              <v-col cols="12" md="4">
+                <v-text-field
+                  v-model="form.dob_year"
+                  label="Year of birth"
+                ></v-text-field>
+              </v-col>
+            </v-row>
           </v-col>
 
           <v-col v-for="(prop, i) in form.props" :key="i" cols="12" md="4">
@@ -151,7 +147,17 @@
         </v-card>
       </v-dialog>
     </v-row>
-
+    <v-dialog id="monthDialog" v-model="monthDialog" max-width="150px">
+      <v-card>
+        <v-row align="center" no-gutters>
+          <v-col cols="12" v-for="n in 12" :key="'month_' + n">
+            <v-btn width="100%" text @click="selectMonth(n)">{{
+              monthName(n)
+            }}</v-btn>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
     <v-footer padless fixed app>
       <v-row class="primary lighten-2">
         <v-col cols="12" class="text-center">
@@ -178,7 +184,9 @@ export default {
         first_name: '',
         last_name: '',
         email: '',
-        birthday: '',
+        dob_year: '',
+        dob_month: '',
+        dob_day: '',
         props: [
           {
             type: 2,
@@ -194,6 +202,7 @@ export default {
       },
       birthdayCal: false,
       propDialog: false,
+      monthDialog: false,
       activeProp: {
         propIdx: null,
         type: 1,
@@ -207,7 +216,22 @@ export default {
   watch: {
     birthdayCal(val) {
       val &&
-        setTimeout(() => (this.$refs.birthdayCalPicker.activePicker = 'YEAR'))
+        setTimeout(() => (this.$refs.birthdayCalPicker.activePicker = 'MONTH'))
+    }
+  },
+
+  computed: {
+    normalizedDobMonth: {
+      get() {
+        if (this.form.dob_month === '' || this.form.dob_month === 0) {
+          return
+        }
+        return moment('2019-' + this.form.dob_month + '-01').format('MMMM')
+      },
+
+      set(value) {
+        this.form.dob_month = value
+      }
     }
   },
 
@@ -224,12 +248,12 @@ export default {
   },
 
   methods: {
-    parseDate(date) {
-      if (!date) return null
-
-      // const [month, day, year] = date.split('-')
-      // return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-      return date
+    monthName(n) {
+      return moment('2019-' + n + '-01').format('MMMM')
+    },
+    selectMonth(n) {
+      this.form.dob_month = n
+      this.monthDialog = false
     },
 
     getPropLabel(prop) {
@@ -322,9 +346,15 @@ export default {
     },
 
     async saveContact() {
+      const data = {}
+      Object.assign(data, this.form)
+      data.dob_year = parseInt(data.dob_year)
+      data.dob_month = parseInt(data.dob_month)
+      data.dob_day = parseInt(data.dob_day)
+
       if (this.id === null) {
         try {
-          await this.$axios.$post('/contacts/', this.form).then((resp) => {
+          await this.$axios.$post('/contacts/', data).then((resp) => {
             this.id = resp.id
             this.$notify('New contact added')
           })
@@ -338,7 +368,7 @@ export default {
       } else {
         try {
           await this.$axios
-            .$put('/contacts/' + this.id + '/', this.form)
+            .$put('/contacts/' + this.id + '/', data)
             .then((resp) => {
               this.$notify('Contact updated')
             })
@@ -355,8 +385,14 @@ export default {
     async fetchContact(id) {
       try {
         await this.$axios.$get('/contacts/' + id + '/').then((resp) => {
-          if (resp.birthday !== null) {
-            resp.birthday = moment(resp.birthday).format('YYYY-MM-DD')
+          if (resp.dob_day === 0) {
+            resp.dob_day = ''
+          }
+          if (resp.dob_month === 0) {
+            resp.dob_month = ''
+          }
+          if (resp.dob_year === 0) {
+            resp.dob_year = ''
           }
           this.form = resp
         })
@@ -371,3 +407,11 @@ export default {
   }
 }
 </script>
+
+<style>
+#monthDialog {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+</style>
