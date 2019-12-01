@@ -20,12 +20,19 @@
                 nuxt
                 :to="'contacts/' + elem.id"
               >
-                <v-card-title class="text-left">
+                <v-card-title class="contactCardTitle">
                   <span>{{ elem.name }}</span>
-                  <v-spacer></v-spacer>
-                  <v-menu bottom left transition="fade-transition" fixed>
+                  <v-menu bottom left transition="fade-transition">
                     <template v-slot:activator="{ on }">
-                      <v-btn icon @click.prevent v-on="on">
+                      <v-btn
+                        icon
+                        @click.prevent
+                        v-on="on"
+                        absolute
+                        top
+                        right
+                        class="contactActionsBtn"
+                      >
                         <v-icon dark>mdi-dots-vertical</v-icon>
                       </v-btn>
                     </template>
@@ -202,5 +209,18 @@ export default {
 }
 .contactCardHovered {
   box-shadow: inset 0 0 0 2px #1e88e5, 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.v-card__text {
+  padding: 2px !important;
+}
+
+.contactCardTitle {
+  padding: 10px 36px 0 10px !important;
+}
+
+.contactActionsBtn {
+  top: 5px !important;
+  right: 0 !important;
 }
 </style>

@@ -150,7 +150,7 @@
     <v-dialog id="monthDialog" v-model="monthDialog" max-width="150px">
       <v-card>
         <v-row align="center" no-gutters>
-          <v-col cols="12" v-for="n in 12" :key="'month_' + n">
+          <v-col cols="12" v-for="n in 13" :key="'month_' + n">
             <v-btn width="100%" text @click="selectMonth(n)">{{
               monthName(n)
             }}</v-btn>
@@ -249,9 +249,15 @@ export default {
 
   methods: {
     monthName(n) {
+      if (n === 13) {
+        return 'None'
+      }
       return moment('2019-' + n + '-01').format('MMMM')
     },
     selectMonth(n) {
+      if (n === 13) {
+        n = 0
+      }
       this.form.dob_month = n
       this.monthDialog = false
     },
@@ -348,9 +354,15 @@ export default {
     async saveContact() {
       const data = {}
       Object.assign(data, this.form)
-      data.dob_year = parseInt(data.dob_year)
-      data.dob_month = parseInt(data.dob_month)
-      data.dob_day = parseInt(data.dob_day)
+      if (data.dob_year === '') {
+        data.dob_year = 0
+      }
+      if (data.dob_month === '') {
+        data.dob_month = 0
+      }
+      if (data.dob_day === '') {
+        data.dob_day = 0
+      }
 
       if (this.id === null) {
         try {

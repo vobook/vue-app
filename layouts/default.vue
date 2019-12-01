@@ -32,8 +32,11 @@
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
-      <v-btn color="success" dark nuxt to="/new-contact" depressed>
-        New contact
+      <v-btn icon dark color="info" nuxt to="/contacts">
+        <v-icon>mdi-contacts</v-icon>
+      </v-btn>
+      <v-btn icon color="success" dark nuxt to="/new-contact">
+        <v-icon>mdi-plus-circle</v-icon>
       </v-btn>
     </v-app-bar>
     <v-content>
@@ -49,11 +52,11 @@ export default {
   data() {
     return {
       navItems: [
-        {
-          icon: 'mdi-apps',
-          title: 'Dashboard',
-          to: '/'
-        },
+        // {
+        //   icon: 'mdi-apps',
+        //   title: 'Dashboard',
+        //   to: '/'
+        // },
         {
           icon: 'mdi-contacts',
           title: 'Contacts',
