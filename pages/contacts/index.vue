@@ -26,12 +26,12 @@
                     <template v-slot:activator="{ on }">
                       <v-btn
                         icon
-                        @click.prevent
-                        v-on="on"
                         absolute
                         top
                         right
                         class="contactActionsBtn"
+                        @click.prevent
+                        v-on="on"
                       >
                         <v-icon dark>mdi-dots-vertical</v-icon>
                       </v-btn>
@@ -53,30 +53,27 @@
                 </v-card-title>
                 <v-card-text>
                   <v-list>
-                    <v-list-item v-if="hasBirthday(elem)">
-                      <v-list-item-content>
-                        <v-list-item-subtitle class="text-left"
-                          ><v-icon>mdi-cake-variant</v-icon
-                          >Birthday</v-list-item-subtitle
+                    <v-list-item v-if="hasBirthday(elem)" class="contactProp">
+                      <v-list-item-content class="contactPropContent">
+                        <v-list-item-title class="text-left"
+                          ><v-icon>mdi-cake-variant</v-icon>
+                          {{ formatBirthdayDate(elem) }}</v-list-item-title
                         >
-                        <v-list-item-title class="text-left">{{
-                          formatBirthdayDate(elem)
-                        }}</v-list-item-title>
                       </v-list-item-content>
                     </v-list-item>
                     <template v-for="item in elem.props">
                       <v-list-item
                         v-if="isTypePrimary(item.type) && item.value !== ''"
                         :key="item.id"
+                        class="contactProp"
                       >
-                        <v-list-item-content>
-                          <v-list-item-subtitle class="text-left"
+                        <v-list-item-content class="contactPropContent">
+                          <v-list-item-title
+                            class="text-left"
+                            :title="propName(item)"
                             ><v-icon>{{ propTypeIcon(item.type) }}</v-icon>
-                            {{ propName(item) }}</v-list-item-subtitle
+                            {{ item.value }}</v-list-item-title
                           >
-                          <v-list-item-title class="text-left">{{
-                            item.value
-                          }}</v-list-item-title>
                         </v-list-item-content>
                       </v-list-item>
                     </template>
@@ -222,5 +219,12 @@ export default {
 .contactActionsBtn {
   top: 5px !important;
   right: 0 !important;
+}
+.contactProp {
+  padding: 5px 10px !important;
+  min-height: auto !important;
+}
+.contactPropContent {
+  padding: 0px !important;
 }
 </style>

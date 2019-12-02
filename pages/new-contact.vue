@@ -150,7 +150,7 @@
     <v-dialog id="monthDialog" v-model="monthDialog" max-width="150px">
       <v-card>
         <v-row align="center" no-gutters>
-          <v-col cols="12" v-for="n in 13" :key="'month_' + n">
+          <v-col v-for="n in 13" :key="'month_' + n" cols="12">
             <v-btn width="100%" text @click="selectMonth(n)">{{
               monthName(n)
             }}</v-btn>
@@ -213,13 +213,6 @@ export default {
     }
   },
 
-  watch: {
-    birthdayCal(val) {
-      val &&
-        setTimeout(() => (this.$refs.birthdayCalPicker.activePicker = 'MONTH'))
-    }
-  },
-
   computed: {
     normalizedDobMonth: {
       get() {
@@ -232,6 +225,13 @@ export default {
       set(value) {
         this.form.dob_month = value
       }
+    }
+  },
+
+  watch: {
+    birthdayCal(val) {
+      val &&
+        setTimeout(() => (this.$refs.birthdayCalPicker.activePicker = 'MONTH'))
     }
   },
 
@@ -325,6 +325,15 @@ export default {
       this.propDialog = true
     },
 
+    toInt(n) {
+      let i = parseInt(n, 10)
+      if (isNaN(i)) {
+        i = 0
+      }
+
+      return i
+    },
+
     saveActiveProp() {
       this.propDialog = false
       // new prop
@@ -354,15 +363,9 @@ export default {
     async saveContact() {
       const data = {}
       Object.assign(data, this.form)
-      if (data.dob_year === '') {
-        data.dob_year = 0
-      }
-      if (data.dob_month === '') {
-        data.dob_month = 0
-      }
-      if (data.dob_day === '') {
-        data.dob_day = 0
-      }
+      data.dob_year = this.toInt(data.dob_year)
+      data.dob_month = this.toInt(data.dob_month)
+      data.dob_day = this.toInt(data.dob_day)
 
       if (this.id === null) {
         try {
