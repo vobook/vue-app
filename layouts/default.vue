@@ -26,11 +26,19 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar fixed app>
+    <v-app-bar fixed app elevate-on-scroll>
       <v-btn icon @click.stop="drawer = !drawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
-      <v-toolbar-title v-text="title" />
+      <v-text-field
+        hide-details
+        prepend-inner-icon="mdi-magnify"
+        single-line
+        clearable
+        autofocus
+        hint="Search anything..."
+        label="Search anything..."
+      ></v-text-field>
       <v-spacer />
       <v-btn icon dark color="info" nuxt to="/contacts">
         <v-icon>mdi-contacts</v-icon>
