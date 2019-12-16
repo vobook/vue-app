@@ -3,7 +3,8 @@ const contactPropertyTypeIcons = require('~/data/contact_property_types.js')
 export const state = () => {
   return {
     auth: null,
-    contactPropertyTypes: []
+    contactPropertyTypes: [],
+    search_query: ''
   }
 }
 
@@ -17,6 +18,13 @@ export const mutations = {
   setAuth(state, auth) {
     state.auth = auth
     localStorage.setItem('auth', JSON.stringify(auth))
+  },
+
+  setSearchQuery(state, query) {
+    if (query === null) {
+      query = ''
+    }
+    state.search_query = query
   },
 
   setContactPropertyTypes(state, types) {

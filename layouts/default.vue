@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <notifications position="bottom center" />
-    <v-navigation-drawer v-model="drawer" app fixed temporary dark>
+    <v-navigation-drawer v-model="drawer" app fixed temporary>
       <v-list>
         <v-list-item>
           <v-list-item-title v-text="fullname()"></v-list-item-title>
@@ -30,16 +30,22 @@
       <v-btn icon @click.stop="drawer = !drawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
-      <v-text-field
-        hide-details
-        prepend-inner-icon="mdi-magnify"
-        single-line
-        clearable
-        autofocus
-        hint="Search anything..."
-        label="Search anything..."
-      ></v-text-field>
-      <v-spacer />
+      <v-spacer>
+        <v-form @submit.prevent="initContactsSearch">
+          <v-text-field
+            hide-details
+            prepend-inner-icon="mdi-magnify"
+            single-line
+            clearable
+            autofocus
+            clear-icon="mdi-close-circle"
+            v-model="search_query"
+            hint="Search anything..."
+            label="Search anything..."
+            @click:clear="clearSearchQuery()"
+          ></v-text-field>
+        </v-form>
+      </v-spacer>
       <v-btn icon dark color="info" nuxt to="/contacts">
         <v-icon>mdi-contacts</v-icon>
       </v-btn>
@@ -69,11 +75,16 @@ export default {
           icon: 'mdi-contacts',
           title: 'Contacts',
           to: '/contacts'
+        },
+        {
+          icon: 'mdi-plus-circle',
+          title: 'Add contact',
+          to: '/new-contact'
         }
       ],
       drawer: false,
       rightDrawer: false,
-      title: 'vobook'
+      search_query: ''
     }
   },
 
@@ -92,6 +103,15 @@ export default {
         ' ' +
         this.$store.state.auth.user.last_name
       )
+    },
+    initContactsSearch() {
+      this.$store.commit('setSearchQuery', this.search_query)
+      if (this.$router.currentRoute.name !== 'contacts') {
+        this.$router.push('/contacts')
+      }
+    },
+    clearSearchQuery() {
+      this.$store.commit('setSearchQuery', '')
     }
   }
 }

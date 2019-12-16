@@ -6,7 +6,7 @@
         Undo
       </v-btn>
     </v-snackbar>
-    <v-container>
+    <v-container v-if="elems !== null && elems.length > 0">
       <Waterfall :resizable="true" :gutterWidth="10" :gutterHeight="10">
         <template v-for="(elem, i) in elems">
           <WaterfallItem
@@ -85,6 +85,11 @@
         </template>
       </Waterfall>
     </v-container>
+    <v-container v-else-if="!loading">
+      <v-alert type="warning">
+        Contacts not found
+      </v-alert>
+    </v-container>
   </v-layout>
 </template>
 
@@ -100,7 +105,8 @@ export default {
   },
   data() {
     return {
-      elems: null,
+      loading: true,
+      elems: [],
       snack: {
         show: false,
         text: '',
@@ -142,6 +148,20 @@ export default {
     }
   },
 
+  computed: {
+    searchQuery() {
+      return this.$store.state.search_query
+    }
+  },
+
+  watch: {
+    searchQuery(now, was) {
+      if (now !== was) {
+        this.loadContacts()
+      }
+    }
+  },
+
   beforeMount() {
     this.hasBirthday = mixins.hasBirthday
     this.formatBirthdayDate = mixins.formatBirthdayDate
@@ -150,8 +170,14 @@ export default {
 
   methods: {
     async loadContacts() {
+      this.loading = true
+      const q = this.searchQuery
+      let path = '/contacts/'
+      if (q !== '') {
+        path += '?query=' + q
+      }
       try {
-        await this.$axios.$get('/contacts/').then((resp) => {
+        await this.$axios.$get(path).then((resp) => {
           this.elems = resp.data
         })
       } catch (e) {
@@ -161,6 +187,7 @@ export default {
           text: e.response.data.error
         })
       }
+      this.loading = false
     },
 
     isTypePrimary(t) {
